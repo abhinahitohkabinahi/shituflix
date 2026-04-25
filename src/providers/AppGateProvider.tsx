@@ -9,7 +9,7 @@ export function AppGateProvider({ children }: { children: React.ReactNode }) {
   const { data, isLoading } = useQuery({
     queryKey: ['appConfig'],
     queryFn: getAppConfig,
-    staleTime: 300000,
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   const [showIntro, setShowIntro] = useState(true);

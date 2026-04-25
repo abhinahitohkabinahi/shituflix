@@ -9,6 +9,8 @@ import { useMyList } from '@/hooks/useMyList';
 import { useAuth } from '@/hooks/useAuth';
 import { RootState } from '@/store/store';
 import { openModal } from '@/store/mediaSlice';
+import { queryClient } from '@/lib/queryClient';
+import { fetchMovieById, fetchTVShowById } from '@/services/tmdb';
 import type { MediaItem, ContentType } from '@/types/media';
 
 interface MediaCardProps {
@@ -56,10 +58,25 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
     dispatch(openModal(item));
   }
 
+  function handleMouseEnter() {
+    if (contentType === 'movie') {
+      queryClient.prefetchQuery({
+        queryKey: ['movie', item.id],
+        queryFn: () => fetchMovieById(item.id),
+      });
+    } else if (contentType === 'tv') {
+      queryClient.prefetchQuery({
+        queryKey: ['tv', item.id],
+        queryFn: () => fetchTVShowById(item.id),
+      });
+    }
+  }
+
   return (
     <div 
       className="netflix-card relative w-full aspect-video rounded-sm overflow-visible bg-gray-900 group cursor-pointer"
       onClick={handleCardClick}
+      onMouseEnter={handleMouseEnter}
     >
       <div className="block w-full h-full">
         <div className="relative w-full h-full">

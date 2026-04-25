@@ -3,8 +3,8 @@ import Link from 'next/link';
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
-      {/* Background with Overlay */}
+    <div className="relative min-h-screen flex flex-col md:items-center md:justify-center bg-black">
+      {/* Background with Overlay (Desktop Only) */}
       <div className="absolute inset-0 z-0 hidden md:block">
         <Image
           src="/assets/images/hero-bg.png"
@@ -16,19 +16,21 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <div className="absolute top-0 left-0 p-8 z-10">
+      {/* Header/Logo Area */}
+      <header className="relative z-10 w-full p-4 md:p-8 md:absolute md:top-0 md:left-0">
         <Link href="/">
           <Image
             src="/assets/images/logo.svg"
             alt="dograFlix"
             width={167}
             height={45}
-            className="w-40 h-auto"
+            className="w-32 md:w-40 h-auto"
           />
         </Link>
-      </div>
+      </header>
 
-      <div className="relative z-10 w-full max-w-[450px] bg-black md:bg-black/75 rounded-md p-8 md:p-16 min-h-screen md:min-h-0">
+      {/* Auth Content Box */}
+      <div className="relative z-10 w-full max-w-[450px] md:bg-black/75 rounded-md px-6 py-8 md:p-16 md:shadow-xl">
         {children}
       </div>
     </div>
