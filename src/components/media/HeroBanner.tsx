@@ -71,6 +71,7 @@ export function HeroBanner({ items }: HeroBannerProps) {
                 className="object-cover object-center"
                 priority={index === 0} // Only prioritize the first image
                 sizes="100vw"
+                unoptimized
               />
               {/* Gradients */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0)_100%)]" />

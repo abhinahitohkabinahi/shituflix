@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { RootState } from '@/store/store';
 import { LandingPage } from '@/components/landing/LandingPage';
 import { HeroBanner } from '@/components/media/HeroBanner';
@@ -45,16 +46,17 @@ function tmdbTVToMediaItem(s: TmdbTVShow): MediaItem {
 
 
 export default function Page() {
+  const router = useRouter();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   if (!isAuthenticated) {
     return <LandingPage />;
   }
 
-  return <HomePage />;
+  return <HomePage router={router} />;
 }
 
-function HomePage() {
+function HomePage({ router }: { router: any }) {
   const { data: trendingMovies = [], isLoading: l1 } = useQuery({ queryKey: ['trending', 'movies'], queryFn: fetchTrendingMovies });
   const { data: trendingTV = [], isLoading: l2 } = useQuery({ queryKey: ['trending', 'tv'], queryFn: fetchTrendingTVShows });
   const { data: topMovies = [], isLoading: l3 } = useQuery({ queryKey: ['topRated', 'movies'], queryFn: fetchTopRatedMovies });
@@ -72,7 +74,15 @@ function HomePage() {
     <div className="min-h-screen bg-[#141414]">
       {heroItems.length > 0 && <HeroBanner items={heroItems} />}
 
-      <OTTProviderRow providers={OTT_PROVIDERS} onSelect={() => {}} />
+      <OTTProviderRow 
+        providers={OTT_PROVIDERS} 
+        onSelect={(providerId) => {
+          const provider = OTT_PROVIDERS.find(p => p.id === providerId);
+          if (provider) {
+            router.push(`/service/${provider.id}`);
+          }
+        }} 
+      />
 
       <ErrorBoundary>
         <MediaCarousel title="Trending Movies" items={trendingMovies.map(tmdbMovieToMediaItem)} contentType="movie" isLoading={l1} />

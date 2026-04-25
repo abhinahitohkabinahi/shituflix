@@ -14,12 +14,12 @@ export const PROTECTED_ROUTES = [
 ];
 
 export const OTT_PROVIDERS = [
-  { id: 'netflix', name: 'Netflix', logo: '/ott/netflix.png' },
-  { id: 'prime-video', name: 'Prime Video', logo: '/ott/prime-video.png' },
-  { id: 'disney-hotstar', name: 'Disney+ Hotstar', logo: '/ott/disney-hotstar.png' },
-  { id: 'hulu', name: 'Hulu', logo: '/ott/hulu.png' },
-  { id: 'hbo', name: 'HBO', logo: '/ott/hbo.png' },
-  { id: 'apple-tv', name: 'Apple TV+', logo: '/ott/apple-tv.png' },
-  { id: 'paramount', name: 'Paramount+', logo: '/ott/paramount.png' },
-  { id: 'shemaroo', name: 'Shemaroo', logo: '/ott/shemaroo.png' },
+  { id: 'netflix', name: 'Netflix', logo: '/ott/netflix.png', networkId: '213' },
+  { id: 'prime-video', name: 'Prime Video', logo: '/ott/prime-video.png', networkId: '1024' },
+  { id: 'disney-hotstar', name: 'Disney+ Hotstar', logo: '/ott/disney-hotstar.png', networkId: '2739' },
+  { id: 'hulu', name: 'Hulu', logo: '/ott/hulu.png', networkId: '453' },
+  { id: 'hbo', name: 'HBO', logo: '/ott/hbo.png', networkId: '49' },
+  { id: 'apple-tv', name: 'Apple TV+', logo: '/ott/apple-tv.png', networkId: '2552' },
+  { id: 'paramount', name: 'Paramount+', logo: '/ott/paramount.png', networkId: '4330' },
+  { id: 'shemaroo', name: 'Shemaroo', logo: '/ott/shemaroo.png', networkId: '2476' },
 ];

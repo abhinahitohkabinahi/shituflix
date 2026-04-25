@@ -87,6 +87,7 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
               fill
               className="object-cover rounded-sm"
               sizes="(max-width: 768px) 50vw, 25vw"
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs text-center px-2">

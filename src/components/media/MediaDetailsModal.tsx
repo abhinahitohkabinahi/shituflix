@@ -137,6 +137,7 @@ export function MediaDetailsModal() {
                 fill
                 className="object-cover"
                 priority
+                unoptimized
               />
               {/* Fade to background color at the bottom */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
@@ -266,16 +267,18 @@ export function MediaDetailsModal() {
               <span className="text-sm text-gray-300">smoking, violence</span>
             </div>
 
-            {/* Top 10 Mock */}
-            <div className="flex items-center gap-2 mt-2">
-              <div className="bg-[#e50914] text-white text-[10px] font-black leading-tight px-1 py-0.5 flex flex-col items-center justify-center rounded-sm">
-                <span>TOP</span>
-                <span className="text-sm -mt-1">10</span>
+            {/* Top 10 Dynamic Badge */}
+            {((details as any)?.popularity > 80) && (
+              <div className="flex items-center gap-2 mt-2">
+                <div className="bg-[#e50914] text-white text-[10px] font-black leading-tight px-1 py-0.5 flex flex-col items-center justify-center rounded-sm">
+                  <span>TOP</span>
+                  <span className="text-sm -mt-1">10</span>
+                </div>
+                <span className="text-white font-bold text-lg tracking-tight">
+                  #{Math.max(1, Math.min(10, 11 - Math.ceil(Math.min(1000, (details as any).popularity) / 100)))} in {isTV ? 'TV Shows' : 'Movies'} Today
+                </span>
               </div>
-              <span className="text-white font-bold text-lg tracking-tight">
-                #2 in {isTV ? 'TV Shows' : 'Movies'} Today
-              </span>
-            </div>
+            )}
             
             <p className="text-gray-200 leading-relaxed mt-4" style={{ fontSize: 'var(--text-body)', fontWeight: 'var(--weight-regular)' }}>
               {modalItem.overview || 'No description available for this title.'}

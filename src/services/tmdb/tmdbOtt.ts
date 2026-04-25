@@ -12,11 +12,12 @@ export async function fetchTopOTTContent(): Promise<TmdbMovie[]> {
   } catch (e) { throw e; }
 }
 
-export async function fetchTVShowsByNetwork(networkId: string, page = 1): Promise<TmdbTVShow[]> {
+export async function fetchTVShowsByNetwork(networkId: string, page = 1, withGenres?: string): Promise<TmdbTVShow[]> {
   try {
     const data = await tmdbFetch<{ results: TmdbTVShow[] }>('/discover/tv', {
       with_networks: networkId,
       page: String(page),
+      with_genres: withGenres || '',
     });
     return data.results;
   } catch (e) { throw e; }
