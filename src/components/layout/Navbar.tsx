@@ -1,0 +1,215 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useEffect, FormEvent } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { Search, Bell, User, LogOut, History, Heart, List, Menu, X, Type } from 'lucide-react';
+import { toggleTitles } from '@/store/mediaSlice';
+import { RootState } from '@/store/store';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/series', label: 'Series' },
+  { href: '/anime', label: 'Anime' },
+  { href: '/my-list', label: 'My List' },
+  { href: '/history', label: 'History' },
+];
+
+export function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [query, setQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const showTitles = useSelector((state: RootState) => state.media.showTitles);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  function handleSearch(e: FormEvent) {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      setIsSearchOpen(false);
+    }
+  }
+
+  return (
+    <nav
+      className={`fixed top-0 z-50 w-full transition-colors duration-500 ${isScrolled ? 'bg-black' : 'bg-transparent bg-gradient-to-b from-black/80 to-transparent'
+        }`}
+    >
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-4 md:px-8">
+        {/* Left Side: Logo & Desktop Links */}
+        <div className="flex items-center gap-8">
+          <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
+            <span className="text-[#e50914] text-2xl font-black tracking-tighter uppercase">dograFlix</span>
+          </Link>
+
+          <div className="hidden items-center gap-6 lg:flex">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className={`text-sm transition-colors hover:text-gray-300 ${pathname === href ? 'font-bold text-white' : 'text-gray-200'
+                  }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Side: Search, Notifications, Profile */}
+        <div className="flex items-center gap-4 text-white md:gap-6">
+          <div className="relative flex items-center">
+            <AnimatePresence>
+              {isSearchOpen && (
+                <motion.form
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 250, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  onSubmit={handleSearch}
+                  className="absolute right-0 flex items-center overflow-hidden border border-white/40 bg-black/60 px-2 py-1 backdrop-blur-md"
+                >
+                  <Search className="h-4 w-4 text-white" />
+                  <input
+                    autoFocus
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Titles, people, genres"
+                    className="ml-2 w-full bg-transparent text-sm text-white placeholder-gray-400 outline-none"
+                  />
+                  <X
+                    className="h-4 w-4 cursor-pointer text-white"
+                    onClick={() => setIsSearchOpen(false)}
+                  />
+                </motion.form>
+              )}
+            </AnimatePresence>
+            {!isSearchOpen && (
+              <Search
+                className="h-6 w-6 cursor-pointer transition-transform hover:scale-110 active:scale-90"
+                onClick={() => setIsSearchOpen(true)}
+              />
+            )}
+          </div>
+
+          <Bell className="hidden h-6 w-6 cursor-pointer transition-transform hover:scale-110 md:block" />
+
+          {/* Toggle Titles Icon */}
+          <button
+            onClick={() => dispatch(toggleTitles())}
+            className={`hidden md:flex items-center justify-center p-1 rounded-md transition-all ${showTitles ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white'}`}
+            title={showTitles ? "Hide movie names" : "Show movie names"}
+          >
+            <Type className="h-6 w-6" />
+          </button>
+
+          {/* Profile Dropdown */}
+          <div className="group relative">
+            <Link href="/profile-selection" className="flex cursor-pointer items-center gap-2">
+              <div className="h-8 w-8 overflow-hidden rounded bg-gray-500">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                  alt="Avatar"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <motion.div
+                animate={{ rotate: 0 }}
+                className="hidden border-b-2 border-r-2 border-white p-0.5 md:block"
+                style={{ transform: 'rotate(45deg)' }}
+              />
+            </Link>
+
+            {/* Dropdown Menu */}
+            <div className="invisible absolute right-0 top-full pt-4 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+              <div className="w-48 overflow-hidden border border-white/10 bg-black/95 shadow-2xl">
+                <div className="border-b border-white/10 p-4">
+                  <Link href="/profile" className="flex items-center gap-3 text-sm hover:underline">
+                    <User className="h-4 w-4" />
+                    Account
+                  </Link>
+                </div>
+                <div className="p-4 space-y-4">
+                  <Link href="/history" className="flex items-center gap-3 text-sm hover:underline">
+                    <History className="h-4 w-4" />
+                    History
+                  </Link>
+                  <Link href="/my-list" className="flex items-center gap-3 text-sm hover:underline">
+                    <List className="h-4 w-4" />
+                    My List
+                  </Link>
+                </div>
+                <div className="border-t border-white/10 p-4">
+                  <button className="flex items-center gap-3 text-sm text-red-500 hover:underline">
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Menu Trigger */}
+          <div className="lg:hidden">
+            {isMobileMenuOpen ? (
+              <X className="h-8 w-8 cursor-pointer" onClick={() => setIsMobileMenuOpen(false)} />
+            ) : (
+              <Menu className="h-8 w-8 cursor-pointer" onClick={() => setIsMobileMenuOpen(true)} />
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-50 flex flex-col bg-black lg:hidden"
+          >
+            <div className="flex items-center justify-between p-4">
+              <span className="text-[#e50914] text-xl font-black uppercase">dograFlix</span>
+              <X className="h-8 w-8 cursor-pointer text-white" onClick={() => setIsMobileMenuOpen(false)} />
+            </div>
+            <div className="flex flex-col items-center gap-8 pt-20 text-xl font-medium text-white">
+              {navLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={pathname === href ? 'text-[#e50914]' : 'text-white'}
+                >
+                  {label}
+                </Link>
+              ))}
+              <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>Account</Link>
+              <button className="text-red-500">Sign Out</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+}
+
