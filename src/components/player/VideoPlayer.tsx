@@ -59,6 +59,7 @@ export function VideoPlayer({ contentId, contentType, season, episode, dub }: Vi
         className="w-full h-full border-none"
         allow="autoplay; fullscreen; picture-in-picture"
         title={`${contentType} player`}
+        referrerPolicy="no-referrer"
       />
     </div>
   );

@@ -19,20 +19,20 @@ export function OTTProviderRow({ providers, onSelect }: OTTProviderRowProps) {
         Streaming Services
       </h2>
       
-      <div className="flex gap-6 overflow-x-auto py-4 pb-8 px-4 md:px-12 lg:px-16 scrollbar-hide">
+      <div className="flex gap-4 md:gap-6 overflow-x-auto py-2 md:py-4 pb-4 md:pb-8 px-4 md:px-12 lg:px-16 no-scrollbar">
         {providers.map(p => (
           <button
             key={p.id}
             onClick={() => onSelect(p.id)}
             className="flex-shrink-0 group flex flex-col items-center gap-2"
           >
-            <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden bg-white border-2 border-gray-800 group-hover:border-[#e50914] group-hover:scale-110 transition-all duration-300 shadow-lg">
+            <div className="w-16 h-16 md:w-28 md:h-28 rounded-full overflow-hidden bg-white border-2 border-gray-800 group-hover:border-[#e50914] group-hover:scale-110 transition-all duration-300 shadow-lg">
               <Image 
                 src={p.logo} 
                 alt={p.name} 
                 width={112} 
                 height={112} 
-                className="object-contain w-full h-full p-3" 
+                className="object-contain w-full h-full p-2 md:p-3" 
               />
             </div>
             <span className="text-[10px] md:text-xs text-gray-400 group-hover:text-white font-medium transition-colors">

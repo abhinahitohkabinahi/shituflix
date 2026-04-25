@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabaseClient';
+import { getRandomIconCode } from '@/utils/profileIcons';
 
 export async function signIn(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -16,6 +17,7 @@ export async function signUp(name: string, email: string, password: string) {
       email,
       role: 'user',
       is_banned: false,
+      avatar_url: getRandomIconCode(), // Storing the code in the avatar_url field
     });
   }
   return data;

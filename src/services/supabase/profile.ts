@@ -31,3 +31,13 @@ export async function checkBan(userId: string): Promise<boolean> {
   if (error) return false; // fail open
   return data?.is_banned ?? false;
 }
+export async function updateAvatar(userId: string, avatarCode: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update({ avatar_url: avatarCode })
+    .eq('id', userId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}

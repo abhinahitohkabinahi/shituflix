@@ -1,5 +1,6 @@
 'use client';
 import { Navbar } from './Navbar';
+import { BottomNav } from './BottomNav';
 import { Footer } from './Footer';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -19,7 +20,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-[#141414] text-white">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 pb-20 md:pb-0">{children}</main>
+      <BottomNav />
       <Footer />
     </div>
   );

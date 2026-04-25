@@ -8,25 +8,21 @@ import { useDispatch } from 'react-redux';
 import { setProfileSelected } from '@/store/authSlice';
 import { MAIN_ICONS, OTHER_ICONS } from './icons';
 
-const INITIAL_PROFILES = [
-  { id: '1', name: 'User 1', image: MAIN_ICONS[13] || MAIN_ICONS[0] }, // red.svg
-  { id: '2', name: 'User 2', image: MAIN_ICONS[1] || MAIN_ICONS[0] }, // blue.svg
-  { id: '3', name: 'User 3', image: MAIN_ICONS[12] || MAIN_ICONS[0] }, // purple.svg
-  { id: '4', name: 'Kids', image: MAIN_ICONS[14] || MAIN_ICONS[0] }, // yellow.svg
-];
+import { useAuth } from '@/hooks/useAuth';
+import { getIconUrl, PROFILE_ICONS } from '@/utils/profileIcons';
+import { updateAvatar } from '@/services/supabase/profile';
 
 export default function ProfileSelectionPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [profiles, setProfiles] = useState(INITIAL_PROFILES);
+  const { user, profile } = useAuth();
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [editingProfileId, setEditingProfileId] = useState<string | null>(null);
   const [showIconPicker, setShowIconPicker] = useState(false);
   const [showMoreIcons, setShowMoreIcons] = useState(false);
 
-  const handleProfileClick = (id: string) => {
+  const handleProfileClick = async () => {
     if (isEditing) {
-      setEditingProfileId(id);
       setShowIconPicker(true);
     } else {
       dispatch(setProfileSelected(true));
@@ -34,20 +30,26 @@ export default function ProfileSelectionPage() {
     }
   };
 
-  const handleIconSelect = (icon: string) => {
-    if (editingProfileId) {
-      setProfiles(prev => prev.map(p => 
-        p.id === editingProfileId ? { ...p, image: icon } : p
-      ));
-      setShowIconPicker(false);
-      setEditingProfileId(null);
-      setShowMoreIcons(false); // Reset for next time
+  const handleIconSelect = async (iconCode: string) => {
+    if (user) {
+      try {
+        await updateAvatar(user.id, iconCode);
+        setShowIconPicker(false);
+        setShowMoreIcons(false);
+        // Refresh page to see new icon (or use state)
+        window.location.reload();
+      } catch (err) {
+        console.error('Failed to update icon', err);
+      }
     }
   };
 
   if (showIconPicker) {
+    const classicCodes = Object.keys(PROFILE_ICONS).filter(k => k.startsWith('classic_'));
+    const otherCodes = Object.keys(PROFILE_ICONS).filter(k => k.startsWith('other_'));
+
     return (
-      <div className="min-h-screen bg-[#141414] flex flex-col items-center py-20 px-4">
+      <div className="min-h-screen bg-[#141414] flex flex-col items-center py-20 px-4 animate-in fade-in duration-500">
         <div className="max-w-6xl w-full">
           <div className="flex items-center gap-4 mb-12">
             <button 
@@ -61,7 +63,7 @@ export default function ProfileSelectionPage() {
             </button>
             <div>
               <h1 className="text-white text-3xl md:text-5xl font-medium">Choose Profile Icon</h1>
-              <p className="text-grey-350 mt-2 text-lg">Select a character for your profile</p>
+              <p className="text-gray-500 mt-2 text-lg">Select a character for your profile</p>
             </div>
           </div>
           
@@ -69,15 +71,15 @@ export default function ProfileSelectionPage() {
             <div>
               <h2 className="text-white text-2xl font-medium mb-6">Classics</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                {MAIN_ICONS.map((icon, index) => (
+                {classicCodes.map((code) => (
                   <div 
-                    key={index}
+                    key={code}
                     className="relative aspect-square cursor-pointer hover:scale-105 transition-transform rounded overflow-hidden hover:ring-4 hover:ring-white"
-                    onClick={() => handleIconSelect(icon)}
+                    onClick={() => handleIconSelect(code)}
                   >
                     <Image 
-                      src={icon} 
-                      alt={`Main Icon ${index}`} 
+                      src={PROFILE_ICONS[code]} 
+                      alt={code} 
                       fill 
                       className="object-cover"
                     />
@@ -90,25 +92,25 @@ export default function ProfileSelectionPage() {
               <div className="flex justify-center mt-8 pb-12">
                 <button 
                   onClick={() => setShowMoreIcons(true)}
-                  className="flex items-center gap-2 text-grey-350 hover:text-white transition-colors border border-grey-350 hover:border-white rounded-full px-6 py-3"
+                  className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors border border-gray-500 hover:border-white rounded-full px-6 py-3 font-medium"
                 >
                   <ChevronDown size={20} />
                   <span>Show More</span>
                 </button>
               </div>
             ) : (
-              <div className="pb-20 animate-fade-in">
+              <div className="pb-20 animate-in slide-in-from-bottom-4 duration-700">
                 <h2 className="text-white text-2xl font-medium mb-6">More Avatars</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-                  {OTHER_ICONS.map((icon, index) => (
+                  {otherCodes.map((code) => (
                     <div 
-                      key={index}
+                      key={code}
                       className="relative aspect-square cursor-pointer hover:scale-110 hover:z-10 transition-transform rounded overflow-hidden hover:ring-2 hover:ring-white"
-                      onClick={() => handleIconSelect(icon)}
+                      onClick={() => handleIconSelect(code)}
                     >
                       <Image 
-                        src={icon} 
-                        alt={`Other Icon ${index}`} 
+                        src={PROFILE_ICONS[code]} 
+                        alt={code} 
                         fill 
                         className="object-cover"
                       />
@@ -123,46 +125,45 @@ export default function ProfileSelectionPage() {
     );
   }
 
+  if (!profile) return null;
+
   return (
-    <div className="min-h-screen bg-[#141414] flex flex-col items-center justify-center p-4">
-      <h1 className="text-white text-3xl md:text-5xl font-medium mb-12">
+    <div className="min-h-screen bg-[#141414] flex flex-col items-center justify-center p-4 animate-in fade-in duration-1000">
+      <h1 className="text-white text-3xl md:text-5xl font-medium mb-12 drop-shadow-lg">
         {isEditing ? 'Manage Profiles:' : "Who's watching?"}
       </h1>
       
-      <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-        {profiles.map((profile) => (
-          <div 
-            key={profile.id} 
-            className="group flex flex-col items-center gap-4 cursor-pointer"
-            onClick={() => handleProfileClick(profile.id)}
-          >
-            <div className="relative w-28 h-28 md:w-40 md:h-40 border-4 border-transparent group-hover:border-white transition-all rounded overflow-hidden">
-              <Image 
-                src={profile.image} 
-                alt={profile.name} 
-                fill 
-                className={`object-cover ${isEditing ? 'opacity-50' : ''}`}
-              />
-              {isEditing && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="bg-black/50 p-2 rounded-full border border-white">
-                    <Pencil className="text-white" size={24} />
-                  </div>
+      <div className="flex flex-wrap justify-center gap-6 md:gap-12">
+        <div 
+          className="group flex flex-col items-center gap-4 cursor-pointer transition-all duration-300"
+          onClick={handleProfileClick}
+        >
+          <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-md overflow-hidden ring-4 ring-transparent group-hover:ring-white transition-all duration-300 group-hover:scale-105 shadow-2xl">
+            <Image 
+              src={getIconUrl(profile.avatar_url)} 
+              alt={profile.name} 
+              fill 
+              className={`object-cover transition-opacity duration-300 ${isEditing ? 'opacity-50' : 'opacity-100'}`}
+            />
+            {isEditing && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                <div className="bg-black/60 p-3 rounded-full border border-white/50 backdrop-blur-sm">
+                  <Pencil className="text-white" size={24} />
                 </div>
-              )}
-            </div>
-            <span className="text-grey-350 text-xl group-hover:text-white transition-colors">
-              {profile.name}
-            </span>
+              </div>
+            )}
           </div>
-        ))}
+          <span className="text-gray-500 text-xl md:text-2xl font-medium group-hover:text-white transition-colors duration-300">
+            {profile.name}
+          </span>
+        </div>
         
         {!isEditing && (
-          <div className="group flex flex-col items-center gap-4 cursor-pointer">
-            <div className="relative w-28 h-28 md:w-40 md:h-40 flex items-center justify-center bg-grey-800/20 group-hover:bg-grey-700 transition-all rounded border-4 border-transparent">
-              <span className="text-grey-350 text-6xl group-hover:text-white">+</span>
+          <div className="group flex flex-col items-center gap-4 cursor-pointer transition-all duration-300 opacity-30 grayscale hover:grayscale-0 hover:opacity-100">
+            <div className="relative w-32 h-32 md:w-44 md:h-44 flex items-center justify-center bg-[#181818] group-hover:bg-gray-800 transition-all duration-300 rounded-md group-hover:scale-105 shadow-2xl">
+              <span className="text-gray-500 text-6xl group-hover:text-white transition-colors duration-300">+</span>
             </div>
-            <span className="text-grey-350 text-xl group-hover:text-white transition-colors">
+            <span className="text-gray-500 text-xl md:text-2xl font-medium group-hover:text-white transition-colors duration-300">
               Add Profile
             </span>
           </div>
@@ -171,10 +172,10 @@ export default function ProfileSelectionPage() {
 
       <button 
         onClick={() => setIsEditing(!isEditing)}
-        className={`mt-20 border px-6 py-2 uppercase tracking-widest transition-all ${
+        className={`mt-24 px-8 py-2 text-sm md:text-lg uppercase tracking-[0.2em] transition-all duration-300 border ${
           isEditing 
-          ? 'bg-white text-black border-white font-bold' 
-          : 'border-grey-350 text-grey-350 hover:text-white hover:border-white'
+          ? 'bg-white text-black border-white font-bold hover:bg-gray-200' 
+          : 'bg-transparent text-gray-500 border-gray-500 hover:text-white hover:border-white'
         }`}
       >
         {isEditing ? 'Done' : 'Manage Profiles'}

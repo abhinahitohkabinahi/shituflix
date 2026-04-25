@@ -56,6 +56,62 @@ export default function Page() {
   return <HomePage router={router} />;
 }
 
+import { useMyList } from '@/hooks/useMyList';
+import { useWatchHistory } from '@/hooks/useWatchHistory';
+import { fetchMovieById, fetchTVShowById } from '@/services/tmdb';
+
+function EnrichedCarousel({ 
+  title, 
+  items, 
+  isLoading 
+}: { 
+  title: string; 
+  items: { content_id: string; content_type: string }[]; 
+  isLoading: boolean 
+}) {
+  const enrichedItems = useQuery({
+    queryKey: ['enriched', title, items.map(i => i.content_id).join(',')],
+    queryFn: async () => {
+      const promises = items.map(async (item) => {
+        try {
+          const details = item.content_type === 'tv' 
+            ? await fetchTVShowById(item.content_id) 
+            : await fetchMovieById(item.content_id);
+          
+          const castDetails = details as any;
+          const mediaItem: MediaItem = {
+            id: String(castDetails.id),
+            title: castDetails.title || castDetails.name,
+            posterPath: castDetails.poster_path,
+            backdropPath: castDetails.backdrop_path,
+            contentType: item.content_type as any,
+            rating: castDetails.vote_average,
+          };
+          return mediaItem;
+        } catch (e) {
+          return null;
+        }
+      });
+      const results = await Promise.all(promises);
+      return results.filter((r): r is MediaItem => r !== null);
+    },
+    enabled: items.length > 0,
+  });
+
+  if (items.length === 0 || (!isLoading && enrichedItems.data?.length === 0)) return null;
+
+  return (
+    <ErrorBoundary>
+      <MediaCarousel 
+        title={title} 
+        items={enrichedItems.data || []} 
+        contentType="movie" 
+        isLoading={isLoading || enrichedItems.isLoading} 
+      />
+    </ErrorBoundary>
+  );
+}
+
 function HomePage({ router }: { router: any }) {
   const { data: trendingMovies = [], isLoading: l1 } = useQuery({ queryKey: ['trending', 'movies'], queryFn: fetchTrendingMovies });
   const { data: trendingTV = [], isLoading: l2 } = useQuery({ queryKey: ['trending', 'tv'], queryFn: fetchTrendingTVShows });
@@ -64,6 +120,9 @@ function HomePage({ router }: { router: any }) {
   const { data: hindiMovies = [], isLoading: l5 } = useQuery({ queryKey: ['hindi', 'movies'], queryFn: fetchTopHindiMovies });
   const { data: hindiTV = [], isLoading: l6 } = useQuery({ queryKey: ['hindi', 'tv'], queryFn: fetchTopHindiTVShows });
   const { data: ottContent = [], isLoading: l7 } = useQuery({ queryKey: ['ott', 'content'], queryFn: fetchTopOTTContent });
+
+  const { data: myListItems = [], isLoading: myListLoading } = useMyList();
+  const { data: watchHistoryItems = [], isLoading: historyLoading } = useWatchHistory();
 
   const heroItems = [
     ...trendingMovies.filter(m => m.backdrop_path).slice(0, 5).map(tmdbMovieToMediaItem),
@@ -74,15 +133,29 @@ function HomePage({ router }: { router: any }) {
     <div className="min-h-screen bg-[#141414]">
       {heroItems.length > 0 && <HeroBanner items={heroItems} />}
 
-      <OTTProviderRow 
-        providers={OTT_PROVIDERS} 
-        onSelect={(providerId) => {
-          const provider = OTT_PROVIDERS.find(p => p.id === providerId);
-          if (provider) {
-            router.push(`/service/${provider.id}`);
-          }
-        }} 
-      />
+      <div className="relative z-10 -mt-12 md:-mt-8 space-y-0">
+        <EnrichedCarousel 
+          title="Continue Watching" 
+          items={watchHistoryItems.slice(0, 20)} 
+          isLoading={historyLoading} 
+        />
+        
+        <EnrichedCarousel 
+          title="My List" 
+          items={myListItems.slice(0, 20)} 
+          isLoading={myListLoading} 
+        />
+
+        <OTTProviderRow 
+          providers={OTT_PROVIDERS} 
+          onSelect={(providerId) => {
+            const provider = OTT_PROVIDERS.find(p => p.id === providerId);
+            if (provider) {
+              router.push(`/service/${provider.id}`);
+            }
+          }} 
+        />
+      </div>
 
       <ErrorBoundary>
         <MediaCarousel title="Trending Movies" items={trendingMovies.map(tmdbMovieToMediaItem)} contentType="movie" isLoading={l1} />

@@ -51,7 +51,7 @@ export function HeroBanner({ items }: HeroBannerProps) {
   }
 
   return (
-    <header className="relative w-full h-[85vh] lg:h-[95vh] text-white overflow-hidden bg-[#141414]">
+    <header className="relative w-full h-[70vh] md:h-[85vh] lg:h-[95vh] text-white overflow-hidden bg-[#141414]">
       {/* Background Images - Render all and crossfade using opacity */}
       {items.map((item, index) => {
         const backdropSrc = item.backdropPath ? `${TMDB_BACKDROP_BASE_URL}${item.backdropPath}` : null;
@@ -74,9 +74,9 @@ export function HeroBanner({ items }: HeroBannerProps) {
                 unoptimized
               />
               {/* Gradients */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0)_100%)]" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/30" />
-              <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#141414] to-transparent" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0)_100%)] md:bg-[radial-gradient(circle_at_20%_50%,rgba(0,0,0,0.4)_0%,rgba(0,0,0,0)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-black/30 md:via-transparent" />
+              <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#141414] via-[#141414]/60 to-transparent" />
             </div>
           </div>
         );
@@ -86,51 +86,65 @@ export function HeroBanner({ items }: HeroBannerProps) {
       <div className="relative z-10 flex flex-col justify-center h-full px-4 md:px-12 lg:px-16 pt-20 max-w-3xl pointer-events-none">
         <div className="pointer-events-auto">
           {/* Key forces re-animation of text on change */}
-          <div key={currentItem.id} className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <h1 className="font-display mb-4 drop-shadow-lg tracking-wider" style={{ fontSize: 'clamp(2rem, 8vw, var(--text-large-title))', lineHeight: '1.1' }}>
+          <div key={currentItem.id} className="animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col items-center md:items-start text-center md:text-left">
+            {/* Top 10 Badge Mockup */}
+            {currentIndex === 0 && (
+              <div className="flex items-center gap-2 mb-4">
+                <div className="bg-[#e50914] text-white text-[10px] font-black p-1 rounded-sm leading-none flex flex-col items-center">
+                  <span>TOP</span>
+                  <span className="text-sm">10</span>
+                </div>
+                <span className="text-white font-bold text-lg drop-shadow-md">#1 in India Today</span>
+              </div>
+            )}
+
+            <h1 className="font-display mb-4 drop-shadow-lg tracking-wider" style={{ fontSize: 'clamp(3rem, 12vw, var(--text-large-title))', lineHeight: '1.1' }}>
               {currentItem.title}
             </h1>
             
-            <p className="mb-8 line-clamp-3 drop-shadow-md text-gray-200 font-medium" style={{ fontSize: 'var(--text-headline-2)', maxWidth: '600px' }}>
+            <p className="mb-8 line-clamp-2 md:line-clamp-3 drop-shadow-md text-gray-200 font-medium md:text-[var(--text-headline-2)] max-w-[320px] md:max-w-[600px] text-base md:text-base">
               {currentItem.overview}
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center md:justify-start gap-10 md:gap-4 px-4 md:px-0">
+            {/* My List */}
+            <button
+               onClick={handleListToggle}
+               className="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 md:px-8 md:py-3 md:bg-gray-500/50 text-white font-bold rounded hover:text-white/80 md:hover:bg-gray-500/40 transition-all transform hover:scale-105 active:scale-95 text-xs md:text-lg md:backdrop-blur-sm order-1 md:order-2"
+            >
+              {inList ? <Check className="h-7 w-7 md:h-6 md:w-6" /> : <Plus className="h-7 w-7 md:h-6 md:w-6" />}
+              <span>{inList ? 'In List' : 'My List'}</span>
+            </button>
+
+            {/* Play Button */}
             <Link
               href={`${watchPath[currentItem.contentType]}/${currentItem.id}`}
-              className="flex items-center gap-3 px-6 md:px-8 py-2 md:py-3 bg-white text-black font-bold rounded hover:bg-white/90 transition-all transform hover:scale-105 active:scale-95 text-lg"
+              className="flex items-center gap-2 px-10 md:px-8 py-3 md:py-3 bg-white text-black font-bold rounded hover:bg-white/90 transition-all transform hover:scale-105 active:scale-95 text-lg md:text-lg order-2 md:order-1"
             >
-              <Play className="fill-black h-6 w-6" />
+              <Play className="fill-black h-6 w-6 md:h-6 md:w-6" />
               Play
             </Link>
 
-            <button
-               onClick={handleListToggle}
-               className="flex items-center gap-3 px-6 md:px-8 py-2 md:py-3 bg-gray-500/50 text-white font-bold rounded hover:bg-gray-500/40 transition-all transform hover:scale-105 active:scale-95 text-lg backdrop-blur-sm"
-            >
-              {inList ? <Check className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
-              {inList ? 'In List' : 'My List'}
-            </button>
-
+            {/* More Info */}
             <button
                onClick={() => dispatch(openModal(currentItem))}
-               className="hidden md:flex items-center gap-3 px-6 md:px-8 py-2 md:py-3 bg-gray-500/50 text-white font-bold rounded hover:bg-gray-500/40 transition-all transform hover:scale-105 active:scale-95 text-lg backdrop-blur-sm"
+               className="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 md:px-8 md:py-3 md:bg-gray-500/50 text-white font-bold rounded hover:text-white/80 md:hover:bg-gray-500/40 transition-all transform hover:scale-105 active:scale-95 text-xs md:text-lg md:backdrop-blur-sm order-3"
             >
-              <Info className="h-6 w-6" />
-              More Info
+              <Info className="h-7 w-7 md:h-6 md:w-6" />
+              <span>{typeof window !== 'undefined' && window.innerWidth < 768 ? 'Info' : 'More Info'}</span>
             </button>
           </div>
         </div>
         
         {/* Indicators */}
-        <div className="absolute bottom-12 left-4 md:left-12 lg:left-16 flex gap-2 pointer-events-auto">
+        <div className="absolute bottom-24 md:bottom-12 left-1/2 -translate-x-1/2 md:left-12 lg:left-16 md:translate-x-0 flex gap-2 pointer-events-auto">
           {items.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`h-1 rounded-full transition-all duration-300 ${
-                index === currentIndex ? 'w-8 bg-white' : 'w-4 bg-gray-500/50 hover:bg-gray-400'
+                index === currentIndex ? 'w-6 md:w-8 bg-white' : 'w-2 md:w-4 bg-gray-500/50 hover:bg-gray-400'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />

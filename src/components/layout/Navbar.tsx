@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search, Bell, User, LogOut, History, Heart, List, Menu, X, Type } from 'lucide-react';
+import { Bell, User, LogOut, History, Heart, List, Menu, X, Type } from 'lucide-react';
 import { toggleTitles } from '@/store/mediaSlice';
 import { RootState } from '@/store/store';
 import { signOut } from '@/services/supabase/auth';
@@ -67,7 +67,8 @@ export function Navbar() {
         {/* Left Side: Logo & Desktop Links */}
         <div className="flex items-center gap-8">
           <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
-            <span className="text-[#e50914] text-2xl font-black tracking-tighter uppercase">dograFlix</span>
+            <span className="text-[#e50914] text-4xl font-display tracking-tighter uppercase md:hidden">D</span>
+            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase hidden md:block">dograFlix</span>
           </Link>
 
           <div className="hidden items-center gap-6 lg:flex">
@@ -96,7 +97,11 @@ export function Navbar() {
                   onSubmit={handleSearch}
                   className="absolute right-0 flex items-center overflow-hidden border border-white/40 bg-black/60 px-2 py-1 backdrop-blur-md"
                 >
-                  <Search className="h-4 w-4 text-white" />
+                  <img
+                    src="/assets/icons/Search.svg"
+                    alt="Search"
+                    className="h-4 w-4 invert"
+                  />
                   <input
                     autoFocus
                     type="text"
@@ -113,8 +118,10 @@ export function Navbar() {
               )}
             </AnimatePresence>
             {!isSearchOpen && (
-              <Search
-                className="h-6 w-6 cursor-pointer transition-transform hover:scale-110 active:scale-90"
+              <img
+                src="/assets/icons/Search.svg"
+                alt="Search"
+                className="hidden h-6 w-6 cursor-pointer invert transition-transform hover:scale-110 active:scale-90 lg:block"
                 onClick={() => setIsSearchOpen(true)}
               />
             )}
@@ -132,7 +139,7 @@ export function Navbar() {
           </button>
 
           {/* Profile Dropdown */}
-          <div className="group relative">
+          <div className="group relative hidden md:block">
             <Link href="/profile-selection" className="flex cursor-pointer items-center gap-2">
               <div className="h-8 w-8 overflow-hidden rounded bg-gray-500">
                 <img
@@ -180,56 +187,25 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Menu Trigger */}
-          <div className="lg:hidden">
-            {isMobileMenuOpen ? (
-              <X className="h-8 w-8 cursor-pointer" onClick={() => setIsMobileMenuOpen(false)} />
-            ) : (
-              <Menu className="h-8 w-8 cursor-pointer" onClick={() => setIsMobileMenuOpen(true)} />
-            )}
+          {/* Mobile Search Icon */}
+          <div className="flex items-center justify-end lg:hidden">
+            <Link href="/search">
+              <img
+                src="/assets/icons/Search.svg"
+                alt="Search"
+                className="h-6 w-6 invert opacity-80 active:scale-90 transition-transform"
+              />
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - HIDDEN as we use BottomNav now */}
+      {/* 
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-50 flex flex-col bg-black lg:hidden"
-          >
-            <div className="flex items-center justify-between p-4">
-              <span className="text-[#e50914] text-xl font-black uppercase">dograFlix</span>
-              <X className="h-8 w-8 cursor-pointer text-white" onClick={() => setIsMobileMenuOpen(false)} />
-            </div>
-            <div className="flex flex-col items-center gap-8 pt-20 text-xl font-medium text-white">
-              {navLinks.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={pathname === href ? 'text-[#e50914]' : 'text-white'}
-                >
-                  {label}
-                </Link>
-              ))}
-              <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>Account</Link>
-              <button 
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  handleSignOut();
-                }}
-                className="text-red-500"
-              >
-                Sign Out
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        ...
+      </AnimatePresence> 
+      */}
     </nav>
   );
 }

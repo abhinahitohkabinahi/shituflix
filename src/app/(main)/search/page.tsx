@@ -69,7 +69,7 @@ export default function SearchPage() {
   const anime = animeResults.map(anilistToMediaItem);
 
   return (
-    <div className="min-h-screen bg-[#141414] py-6">
+    <div className="min-h-screen bg-[#141414] pt-24 pb-6">
       <div className="max-w-5xl mx-auto px-4">
         <form onSubmit={handleSubmit} className="relative mb-6">
           <input
