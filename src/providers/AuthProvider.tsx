@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { supabase } from '@/lib/supabaseClient';
-import { setUser, setSession, setProfile } from '@/store/authSlice';
+import { setUser, setSession, setProfile, clearAuth } from '@/store/authSlice';
 import { setProvider } from '@/store/mediaSlice';
 import { getProfile } from '@/services/supabase/profile';
 import { getProviderPreference } from '@/utils/urlGenerators';
@@ -19,7 +19,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      dispatch(setUser(session?.user ?? null));
+      if (!session) {
+        dispatch(clearAuth());
+        return;
+      }
+      
+      dispatch(setUser(session.user));
       dispatch(setSession(session));
       if (session?.user) {
         try {

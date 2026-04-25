@@ -20,8 +20,7 @@ export function SignInForm() {
     setLoading(true);
     try {
       await signIn(email, password);
-      const redirect = searchParams.get('redirect') ?? '/';
-      router.push(redirect);
+      router.push('/profile-selection');
     } catch {
       setError('Invalid email or password. Please try again.');
     } finally {

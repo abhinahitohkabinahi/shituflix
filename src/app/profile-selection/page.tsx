@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Pencil, ArrowLeft, ChevronDown } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { setProfileSelected } from '@/store/authSlice';
 import { MAIN_ICONS, OTHER_ICONS } from './icons';
 
 const INITIAL_PROFILES = [
@@ -15,6 +17,7 @@ const INITIAL_PROFILES = [
 
 export default function ProfileSelectionPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [profiles, setProfiles] = useState(INITIAL_PROFILES);
   const [isEditing, setIsEditing] = useState(false);
   const [editingProfileId, setEditingProfileId] = useState<string | null>(null);
@@ -26,6 +29,7 @@ export default function ProfileSelectionPage() {
       setEditingProfileId(id);
       setShowIconPicker(true);
     } else {
+      dispatch(setProfileSelected(true));
       router.push('/');
     }
   };

@@ -2,8 +2,20 @@
 
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export function HeroSection() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+
+  const handleGetStarted = () => {
+    if (email.trim()) {
+      router.push(`/sign-up?email=${encodeURIComponent(email.trim())}`);
+    } else {
+      router.push('/sign-up');
+    }
+  };
   return (
     <div className="relative h-[80vh] lg:h-[95vh] w-full flex items-center justify-center text-center overflow-hidden">
       {/* Background with Overlay */}
@@ -36,9 +48,14 @@ export function HeroSection() {
             <input 
               type="email" 
               placeholder="Email address" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="flex-1 bg-black/40 border border-grey-350/50 rounded px-4 py-4 text-white placeholder:text-grey-350 focus:outline-none focus:ring-2 focus:ring-white/40"
             />
-            <button className="bg-[#e50815] text-white px-8 py-4 rounded text-xl md:text-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#c10712] transition-colors whitespace-nowrap">
+            <button 
+              onClick={handleGetStarted}
+              className="bg-[#e50815] text-white px-8 py-4 rounded text-xl md:text-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#c10712] transition-colors whitespace-nowrap"
+            >
               Get Started
               <ArrowRight size={24} />
             </button>

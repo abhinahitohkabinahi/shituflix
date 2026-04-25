@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Search, Bell, User, LogOut, History, Heart, List, Menu, X, Type } from 'lucide-react';
 import { toggleTitles } from '@/store/mediaSlice';
 import { RootState } from '@/store/store';
+import { signOut } from '@/services/supabase/auth';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -45,6 +46,15 @@ export function Navbar() {
     if (query.trim()) {
       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
       setIsSearchOpen(false);
+    }
+  }
+
+  async function handleSignOut() {
+    try {
+      await signOut();
+      router.push('/sign-in');
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
   }
 
@@ -158,7 +168,10 @@ export function Navbar() {
                   </Link>
                 </div>
                 <div className="border-t border-white/10 p-4">
-                  <button className="flex items-center gap-3 text-sm text-red-500 hover:underline">
+                  <button 
+                    onClick={handleSignOut}
+                    className="flex items-center gap-3 text-sm text-red-500 hover:underline w-full text-left"
+                  >
                     <LogOut className="h-4 w-4" />
                     Sign out
                   </button>
@@ -204,7 +217,15 @@ export function Navbar() {
                 </Link>
               ))}
               <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>Account</Link>
-              <button className="text-red-500">Sign Out</button>
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  handleSignOut();
+                }}
+                className="text-red-500"
+              >
+                Sign Out
+              </button>
             </div>
           </motion.div>
         )}

@@ -9,6 +9,7 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
+  isProfileSelected: boolean;
 }
 
 const initialState: AuthState = {
@@ -18,6 +19,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   isAuthenticated: false,
+  isProfileSelected: false,
 };
 
 export const authSlice = createSlice({
@@ -40,6 +42,9 @@ export const authSlice = createSlice({
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
     },
+    setProfileSelected(state, action: PayloadAction<boolean>) {
+      state.isProfileSelected = action.payload;
+    },
     clearAuth(state) {
       state.user = null;
       state.session = null;
@@ -47,9 +52,10 @@ export const authSlice = createSlice({
       state.loading = false;
       state.error = null;
       state.isAuthenticated = false;
+      state.isProfileSelected = false;
     },
   },
 });
 
-export const { setUser, setSession, setProfile, setLoading, setError, clearAuth } = authSlice.actions;
+export const { setUser, setSession, setProfile, setLoading, setError, setProfileSelected, clearAuth } = authSlice.actions;
 export default authSlice.reducer;
