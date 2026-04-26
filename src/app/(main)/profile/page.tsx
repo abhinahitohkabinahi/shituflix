@@ -113,7 +113,7 @@ export default function ProfilePage() {
         <div className="flex flex-col md:flex-row items-center gap-8 mb-12 p-8 bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-gray-800 shadow-2xl">
           <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-2xl ring-4 ring-gray-800">
              <Image 
-               src="/assets/icons/red.svg" 
+               src={getIconUrl(profile.avatar_url)} 
                alt="Profile" 
                fill 
                className="object-cover"

@@ -12,6 +12,8 @@ export function useWatchHistory() {
     queryKey: ['watchHistory', userId],
     queryFn: () => getWatchHistory(userId!),
     enabled: !!userId,
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const upsertMutation = useMutation({

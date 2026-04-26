@@ -29,8 +29,8 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         </Link>
       </header>
 
-      {/* Auth Content Box */}
-      <div className="relative z-10 w-full max-w-[450px] md:bg-black/75 rounded-md px-6 py-8 md:p-16 md:shadow-xl">
+      {/* Auth Content Box — matches Frame 61: 450w x 708h card */}
+      <div className="relative z-10 w-full max-w-[450px] md:min-h-[660px] md:bg-black/60 rounded-[4px] px-6 py-8 md:px-[68px] md:py-[60px] md:shadow-xl">
         {children}
       </div>
     </div>

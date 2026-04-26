@@ -10,6 +10,7 @@ interface AuthState {
   error: string | null;
   isAuthenticated: boolean;
   isProfileSelected: boolean;
+  isKidsMode: boolean;
 }
 
 const initialState: AuthState = {
@@ -20,6 +21,7 @@ const initialState: AuthState = {
   error: null,
   isAuthenticated: false,
   isProfileSelected: false,
+  isKidsMode: false,
 };
 
 export const authSlice = createSlice({
@@ -45,6 +47,9 @@ export const authSlice = createSlice({
     setProfileSelected(state, action: PayloadAction<boolean>) {
       state.isProfileSelected = action.payload;
     },
+    setKidsMode(state, action: PayloadAction<boolean>) {
+      state.isKidsMode = action.payload;
+    },
     clearAuth(state) {
       state.user = null;
       state.session = null;
@@ -53,9 +58,10 @@ export const authSlice = createSlice({
       state.error = null;
       state.isAuthenticated = false;
       state.isProfileSelected = false;
+      state.isKidsMode = false;
     },
   },
 });
 
-export const { setUser, setSession, setProfile, setLoading, setError, setProfileSelected, clearAuth } = authSlice.actions;
+export const { setUser, setSession, setProfile, setLoading, setError, setProfileSelected, setKidsMode, clearAuth } = authSlice.actions;
 export default authSlice.reducer;

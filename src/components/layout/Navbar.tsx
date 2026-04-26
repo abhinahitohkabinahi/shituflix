@@ -9,13 +9,26 @@ import { Bell, User, LogOut, History, Heart, List, Menu, X, Type } from 'lucide-
 import { toggleTitles } from '@/store/mediaSlice';
 import { RootState } from '@/store/store';
 import { signOut } from '@/services/supabase/auth';
+import { useAuth } from '@/hooks/useAuth';
+import { getIconUrl } from '@/utils/profileIcons';
+
+const GENRES = [
+  { id: '28', name: 'Action', type: 'movie' },
+  { id: '35', name: 'Comedy', type: 'movie' },
+  { id: '18', name: 'Drama', type: 'movie' },
+  { id: '27', name: 'Horror', type: 'movie' },
+  { id: '878', name: 'Sci-Fi', type: 'movie' },
+  { id: '10749', name: 'Romance', type: 'movie' },
+  { id: '53', name: 'Thriller', type: 'movie' },
+  { id: '99', name: 'Documentary', type: 'movie' },
+];
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/series', label: 'Series' },
+  { href: '/movies', label: 'Movies' },
+  { href: '/tv', label: 'TV Shows' },
   { href: '/anime', label: 'Anime' },
   { href: '/my-list', label: 'My List' },
-  { href: '/history', label: 'History' },
 ];
 
 export function Navbar() {
@@ -24,9 +37,11 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [query, setQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isGenresOpen, setIsGenresOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dispatch = useDispatch();
   const showTitles = useSelector((state: RootState) => state.media.showTitles);
+  const { profile, isKidsMode } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,21 +82,43 @@ export function Navbar() {
         {/* Left Side: Logo & Desktop Links */}
         <div className="flex items-center gap-8">
           <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
-            <span className="text-[#e50914] text-4xl font-display tracking-tighter uppercase md:hidden">D</span>
+            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase md:hidden">DOGRAFLIX</span>
             <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase hidden md:block">dograFlix</span>
           </Link>
 
           <div className="hidden items-center gap-6 lg:flex">
-            {navLinks.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className={`text-sm transition-colors hover:text-gray-300 ${pathname === href ? 'font-bold text-white' : 'text-gray-200'
-                  }`}
-              >
-                {label}
-              </Link>
-            ))}
+            <Link href="/" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/' ? 'font-bold text-white' : 'text-gray-200'}`}>Home</Link>
+            <Link href="/movies" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/movies' ? 'font-bold text-white' : 'text-gray-200'}`}>Movies</Link>
+            <Link href="/tv" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/tv' ? 'font-bold text-white' : 'text-gray-200'}`}>TV Shows</Link>
+            
+            {/* Genres Dropdown */}
+            <div className="group relative">
+              <button className="flex items-center gap-1 text-sm text-gray-200 transition-colors hover:text-gray-300">
+                Genres
+                <motion.div
+                  animate={{ rotate: 0 }}
+                  className="ml-1 border-b-2 border-r-2 border-gray-400 p-0.5"
+                  style={{ transform: 'rotate(45deg)' }}
+                />
+              </button>
+              
+              <div className="invisible absolute left-1/2 -translate-x-1/2 top-full pt-4 opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+                <div className="w-56 overflow-hidden border border-white/10 bg-black/95 shadow-2xl p-4 grid grid-cols-2 gap-x-4 gap-y-2">
+                  {GENRES.map((genre) => (
+                    <Link
+                      key={genre.id}
+                      href={`/genre/${genre.type}/${genre.id}`}
+                      className="text-xs text-gray-400 hover:text-white transition-colors"
+                    >
+                      {genre.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <Link href="/anime" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/anime' ? 'font-bold text-white' : 'text-gray-200'}`}>Anime</Link>
+            <Link href="/my-list" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/my-list' ? 'font-bold text-white' : 'text-gray-200'}`}>My List</Link>
           </div>
         </div>
 
@@ -100,7 +137,7 @@ export function Navbar() {
                   <img
                     src="/assets/icons/Search.svg"
                     alt="Search"
-                    className="h-4 w-4 invert"
+                    className="h-4 w-4 brightness-0 invert"
                   />
                   <input
                     autoFocus
@@ -121,13 +158,13 @@ export function Navbar() {
               <img
                 src="/assets/icons/Search.svg"
                 alt="Search"
-                className="hidden h-6 w-6 cursor-pointer invert transition-transform hover:scale-110 active:scale-90 lg:block"
+                className="hidden h-6 w-6 cursor-pointer brightness-0 invert transition-transform hover:scale-110 active:scale-90 lg:block"
                 onClick={() => setIsSearchOpen(true)}
               />
             )}
           </div>
 
-          <Bell className="hidden h-6 w-6 cursor-pointer transition-transform hover:scale-110 md:block" />
+
 
           {/* Toggle Titles Icon */}
           <button
@@ -143,7 +180,7 @@ export function Navbar() {
             <Link href="/profile-selection" className="flex cursor-pointer items-center gap-2">
               <div className="h-8 w-8 overflow-hidden rounded bg-gray-500">
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png"
+                  src={isKidsMode ? "/assets/images/profiles/kids.svg" : getIconUrl(profile?.avatar_url)}
                   alt="Avatar"
                   className="h-full w-full object-cover"
                 />
@@ -187,13 +224,27 @@ export function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Search Icon */}
-          <div className="flex items-center justify-end lg:hidden">
+          {/* Mobile Profile & Search */}
+          <div className="flex items-center gap-3 lg:hidden">
+            <button
+              onClick={() => dispatch(toggleTitles())}
+              className={`flex items-center justify-center p-1 rounded-md transition-all ${showTitles ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white'}`}
+              title={showTitles ? "Hide movie names" : "Show movie names"}
+            >
+              <Type className="h-6 w-6" />
+            </button>
             <Link href="/search">
               <img
                 src="/assets/icons/Search.svg"
                 alt="Search"
-                className="h-6 w-6 invert opacity-80 active:scale-90 transition-transform"
+                className="h-6 w-6 brightness-0 invert opacity-100 active:scale-90 transition-transform"
+              />
+            </Link>
+            <Link href="/profile-selection" className="h-8 w-8 overflow-hidden rounded bg-gray-500 border border-white/20 active:scale-90 transition-transform">
+              <img
+                src={isKidsMode ? "/assets/images/profiles/kids.svg" : getIconUrl(profile?.avatar_url)}
+                alt="Avatar"
+                className="h-full w-full object-cover"
               />
             </Link>
           </div>

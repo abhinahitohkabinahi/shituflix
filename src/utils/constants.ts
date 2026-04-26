@@ -8,6 +8,7 @@ export const PROTECTED_ROUTES = [
   '/my-list',
   '/profile',
   '/movie',
+  '/movies',
   '/tv',
   '/watch',
   '/genre',

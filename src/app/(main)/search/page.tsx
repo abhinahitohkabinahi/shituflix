@@ -9,24 +9,8 @@ import { useSearchHistory } from '@/hooks/useSearchHistory';
 import { useAuth } from '@/hooks/useAuth';
 import { searchMedia } from '@/services/tmdb';
 import { searchAnime } from '@/services/anilist';
+import { tmdbMovieToMediaItem, tmdbTVToMediaItem, anilistToMediaItem } from '@/utils/mediaMapping';
 import type { TmdbMovie, TmdbTVShow } from '@/types/tmdb';
-import type { AniListMedia } from '@/types/anilist';
-import type { MediaItem } from '@/types/media';
-
-function isTVShow(item: TmdbMovie | TmdbTVShow): item is TmdbTVShow {
-  return 'name' in item;
-}
-
-function tmdbToMediaItem(item: TmdbMovie | TmdbTVShow): MediaItem {
-  if (isTVShow(item)) {
-    return { id: String(item.id), title: item.name, posterPath: item.poster_path, backdropPath: item.backdrop_path, contentType: 'tv', rating: item.vote_average };
-  }
-  return { id: String(item.id), title: item.title, posterPath: item.poster_path, backdropPath: item.backdrop_path, contentType: 'movie', rating: item.vote_average };
-}
-
-function anilistToMediaItem(a: AniListMedia): MediaItem {
-  return { id: String(a.id), title: a.title.english ?? a.title.romaji, posterPath: null, backdropPath: a.bannerImage ?? null, contentType: 'anime', rating: a.averageScore ? a.averageScore / 10 : undefined };
-}
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -64,8 +48,14 @@ export default function SearchPage() {
     }
   }
 
-  const movies = tmdbResults.filter(r => !isTVShow(r as TmdbMovie | TmdbTVShow)).map(r => tmdbToMediaItem(r as TmdbMovie | TmdbTVShow));
-  const tvShows = tmdbResults.filter(r => isTVShow(r as TmdbMovie | TmdbTVShow)).map(r => tmdbToMediaItem(r as TmdbMovie | TmdbTVShow));
+  const movies = tmdbResults
+    .filter(r => !('name' in r))
+    .map(r => tmdbMovieToMediaItem(r as TmdbMovie));
+    
+  const tvShows = tmdbResults
+    .filter(r => 'name' in r)
+    .map(r => tmdbTVToMediaItem(r as TmdbTVShow));
+    
   const anime = animeResults.map(anilistToMediaItem);
 
   return (

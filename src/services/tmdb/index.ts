@@ -5,6 +5,7 @@ export * from './tmdbSearch';
 export * from './tmdbGenres';
 export * from './tmdbHindi';
 export * from './tmdbOtt';
+export * from './tmdbKids';
 
 export const TmdbApiService = {
   fetchTrendingMovies: () => import('./tmdbTrending').then(m => m.fetchTrendingMovies()),
@@ -22,4 +23,6 @@ export const TmdbApiService = {
   fetchTopOTTContent: () => import('./tmdbOtt').then(m => m.fetchTopOTTContent()),
   fetchTVShowsByNetwork: (networkId: string, page?: number) => import('./tmdbOtt').then(m => m.fetchTVShowsByNetwork(networkId, page)),
   fetchMoviesByCompany: (companyId: string, page?: number) => import('./tmdbOtt').then(m => m.fetchMoviesByCompany(companyId, page)),
+  fetchKidsMovies: () => import('./tmdbKids').then(m => m.fetchKidsMovies()),
+  fetchKidsTVShows: () => import('./tmdbKids').then(m => m.fetchKidsTVShows()),
 };

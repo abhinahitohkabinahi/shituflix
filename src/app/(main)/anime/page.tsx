@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { MediaCarousel } from '@/components/media/MediaCarousel';
+import { MediaPageLayout } from '@/components/media/MediaPageLayout';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { fetchTrendingAnime, fetchMostPopularAnime, fetchRecentlyUpdatedAnime } from '@/services/anilist';
 import { gql } from '@/services/anilist/anilistClient';
@@ -31,9 +32,10 @@ export default function AnimePage() {
   const { data: popular = [], isLoading: l3 } = useQuery({ queryKey: ['anime', 'popular'], queryFn: fetchMostPopularAnime });
   const { data: recent = [], isLoading: l4 } = useQuery({ queryKey: ['anime', 'recent'], queryFn: fetchRecentlyUpdatedAnime });
 
+  const heroItems = trending.filter(a => a.bannerImage).slice(0, 10).map(anilistToMediaItem);
+
   return (
-    <div className="min-h-screen bg-[#141414] py-6">
-      <h1 className="text-2xl font-bold text-white px-4 mb-4">Anime</h1>
+    <MediaPageLayout heroItems={heroItems}>
       <ErrorBoundary>
         <MediaCarousel title="Trending Anime" items={trending.map(anilistToMediaItem)} contentType="anime" isLoading={l1} />
       </ErrorBoundary>
@@ -46,6 +48,6 @@ export default function AnimePage() {
       <ErrorBoundary>
         <MediaCarousel title="Recently Updated" items={recent.map(anilistToMediaItem)} contentType="anime" isLoading={l4} />
       </ErrorBoundary>
-    </div>
+    </MediaPageLayout>
   );
 }

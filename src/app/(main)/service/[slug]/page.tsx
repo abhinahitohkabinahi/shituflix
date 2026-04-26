@@ -1,30 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-
 import { useQuery } from '@tanstack/react-query';
 import { useParams, notFound } from 'next/navigation';
 import { MediaCarousel } from '@/components/media/MediaCarousel';
+import { MediaPageLayout } from '@/components/media/MediaPageLayout';
 import { Spinner } from '@/components/ui/Spinner';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { fetchTVShowsByNetwork } from '@/services/tmdb/tmdbOtt';
-import { HeroBanner } from '@/components/media/HeroBanner';
-import type { TmdbTVShow } from '@/types/tmdb';
-import type { MediaItem } from '@/types/media';
+import { tmdbTVToMediaItem } from '@/utils/mediaMapping';
 import { OTT_PROVIDERS } from '@/utils/constants';
-
-function tmdbTVToMediaItem(s: TmdbTVShow): MediaItem {
-  return { 
-    id: String(s.id), 
-    title: s.name, 
-    posterPath: s.poster_path, 
-    backdropPath: s.backdrop_path, 
-    contentType: 'tv', 
-    rating: s.vote_average,
-    overview: s.overview
-  };
-}
 
 const CATEGORIES = [
   { title: 'Popular Shows', genres: '' },
@@ -59,44 +45,47 @@ export default function ServicePage() {
   const popularItems = (results[0].data || []).map(tmdbTVToMediaItem);
   const heroItems = popularItems.slice(0, 5);
 
-  return (
-    <div className="min-h-screen bg-[#141414] pb-12 pt-24">
-      <div className="px-4 md:px-12 lg:px-16 mb-8">
-         <div className="flex items-center gap-4">
-           <div className="bg-white p-3 rounded-xl inline-block shadow-2xl">
-             <Image 
-               src={provider.logo} 
-               alt={provider.name} 
-               width={160} 
-               height={60} 
-               className="h-12 md:h-16 w-auto object-contain"
-             />
-           </div>
-           <h1 className="sr-only">{provider.name}</h1>
-         </div>
-         <p className="text-gray-400 mt-2 font-medium">Original series and exclusive content from {provider.name}</p>
-      </div>
-
-      {/* Hero Banner for the Network */}
-      {heroItems.length > 0 && <HeroBanner items={heroItems} />}
-
-      <div className="relative z-20 mt-8">
-        {CATEGORIES.map((cat, index) => {
-          const items = (results[index].data || []).map(tmdbTVToMediaItem);
-          if (items.length === 0) return null;
-
-          return (
-            <ErrorBoundary key={cat.title}>
-              <MediaCarousel 
-                title={cat.title} 
-                items={items} 
-                contentType="tv" 
-                isLoading={results[index].isLoading} 
-              />
-            </ErrorBoundary>
-          );
-        })}
+  const topContent = (
+    <div className="px-4 md:px-12 lg:px-16 pt-28 pb-4 bg-gradient-to-b from-black/60 to-transparent">
+      <div className="flex items-center gap-4">
+        <div className="bg-white/10 backdrop-blur-md p-2 md:p-3 rounded-xl inline-block shadow-2xl border border-white/20">
+          <Image 
+            src={provider.logo} 
+            alt={provider.name} 
+            width={120} 
+            height={45} 
+            className="h-8 md:h-12 w-auto object-contain brightness-110"
+          />
+        </div>
+        <div className="flex flex-col">
+          <h1 className="text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-lg tracking-tight">
+            {provider.name}
+          </h1>
+          <p className="text-gray-200 text-xs md:text-sm font-medium drop-shadow-md">
+            Original series and exclusive content
+          </p>
+        </div>
       </div>
     </div>
+  );
+
+  return (
+    <MediaPageLayout heroItems={heroItems} topContent={topContent}>
+      {CATEGORIES.map((cat, index) => {
+        const items = (results[index].data || []).map(tmdbTVToMediaItem);
+        if (items.length === 0) return null;
+
+        return (
+          <ErrorBoundary key={cat.title}>
+            <MediaCarousel 
+              title={cat.title} 
+              items={items} 
+              contentType="tv" 
+              isLoading={results[index].isLoading} 
+            />
+          </ErrorBoundary>
+        );
+      })}
+    </MediaPageLayout>
   );
 }

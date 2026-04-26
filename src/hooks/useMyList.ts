@@ -12,6 +12,8 @@ export function useMyList() {
     queryKey: ['myList', userId],
     queryFn: () => getMyList(userId!),
     enabled: !!userId,
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5, // 5 minutes
   });
 
   const addMutation = useMutation({

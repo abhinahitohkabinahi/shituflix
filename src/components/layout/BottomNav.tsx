@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Tv, PlayCircle, Heart, User } from 'lucide-react';
+import { Home, Tv, PlayCircle, Heart, User, Clapperboard } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
-  { href: '/series', icon: Tv, label: 'Series' },
+  { href: '/movies', icon: Clapperboard, label: 'Movies' },
+  { href: '/tv', icon: Tv, label: 'TV Shows' },
   { href: '/anime', icon: PlayCircle, label: 'Anime' },
   { href: '/my-list', icon: Heart, label: 'My List' },
-  { href: '/profile', icon: User, label: 'More' },
 ];
 
 export function BottomNav() {

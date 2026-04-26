@@ -37,12 +37,14 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
   const inList = isAuthenticated ? isInList(item.id) : false;
   const showTitles = useSelector((state: RootState) => state.media.showTitles);
   
+  const isVertical = typeof window !== 'undefined' && window.innerWidth < 768;
+  
   const href = `${detailPath[contentType]}/${item.id}`;
-  const src = item.backdropPath 
-    ? `${TMDB_BACKDROP_BASE_URL}${item.backdropPath}` 
-    : item.posterPath 
-      ? `${TMDB_IMAGE_BASE_URL}${item.posterPath}` 
-      : null;
+  
+  // Prefer poster for vertical layout (mobile/tablet), backdrop for horizontal (desktop)
+  const src = isVertical
+    ? (item.posterPath ? `${TMDB_IMAGE_BASE_URL}${item.posterPath}` : (item.backdropPath ? `${TMDB_BACKDROP_BASE_URL}${item.backdropPath}` : null))
+    : (item.backdropPath ? `${TMDB_BACKDROP_BASE_URL}${item.backdropPath}` : (item.posterPath ? `${TMDB_IMAGE_BASE_URL}${item.posterPath}` : null));
 
   function handleListToggle(e: React.MouseEvent) {
     e.preventDefault();
@@ -74,7 +76,7 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
 
   return (
     <div 
-      className="netflix-card relative w-full aspect-video rounded-sm overflow-visible bg-gray-900 group cursor-pointer"
+      className="netflix-card relative w-[103px] h-[161px] md:w-full md:aspect-video rounded-sm overflow-visible bg-gray-900 group cursor-pointer"
       onClick={handleCardClick}
       onMouseEnter={handleMouseEnter}
     >
@@ -86,7 +88,7 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
               alt={item.title}
               fill
               className="object-cover rounded-sm"
-              sizes="(max-width: 768px) 50vw, 25vw"
+              sizes="(max-width: 768px) 103px, 25vw"
               unoptimized
             />
           ) : (
@@ -97,15 +99,15 @@ export function MediaCard({ item, contentType }: MediaCardProps) {
           
           {/* Global Title Toggle Overlay */}
           {showTitles && (
-            <div className="absolute bottom-0 left-0 w-full p-2 bg-black/60 group-hover:opacity-0 transition-opacity">
-              <p className="text-[10px] text-white font-bold line-clamp-1">{item.title}</p>
+            <div className="absolute bottom-0 left-0 w-full p-1.5 bg-black/70 md:group-hover:opacity-0 transition-opacity">
+              <p className="text-[9px] md:text-[10px] text-white font-medium md:font-bold line-clamp-1">{item.title}</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Hover Information Overlay */}
-      <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
+      {/* Hover Information Overlay - Hide on mobile */}
+      <div className="absolute inset-0 z-10 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none md:group-hover:pointer-events-auto hidden md:block">
         <div className="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-black via-black/80 to-transparent rounded-b-sm">
           <div className="flex items-center gap-2 mb-2">
             <Link 
