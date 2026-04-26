@@ -9,7 +9,7 @@ import { MediaCarousel } from '@/components/media/MediaCarousel';
 import { EnrichedCarousel } from '@/components/media/EnrichedCarousel';
 import { MediaPageLayout } from '@/components/media/MediaPageLayout';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
-import { tmdbMovieToMediaItem, tmdbTVToMediaItem } from '@/utils/mediaMapping';
+import { tmdbMovieToMediaItem, tmdbTVToMediaItem, tmdbToMediaItem } from '@/utils/mediaMapping';
 import {
   fetchTrendingMovies,
   fetchTrendingTVShows,
@@ -20,7 +20,8 @@ import {
   fetchTopOTTContent,
   fetchMoviesByGenre,
   fetchKidsMovies,
-  fetchKidsTVShows
+  fetchKidsTVShows,
+  searchMedia
 } from '@/services/tmdb';
 import { useMyList } from '@/hooks/useMyList';
 import { useWatchHistory } from '@/hooks/useWatchHistory';
@@ -59,6 +60,11 @@ function HomePage({ router }: { router: any }) {
     queryFn: () => fetchKidsTVShows(),
     enabled: isKidsMode 
   });
+  const { data: doraemonData = [], isLoading: dl } = useQuery({ 
+    queryKey: ['search', 'doraemon'], 
+    queryFn: () => searchMedia('Doraemon'),
+    enabled: isKidsMode 
+  });
 
   // Genre Data (Singular)
   const { data: action = [], isLoading: ga } = useQuery({ queryKey: ['genre', '28'], queryFn: () => fetchMoviesByGenre('28'), enabled: !isKidsMode });
@@ -81,6 +87,12 @@ function HomePage({ router }: { router: any }) {
   if (isKidsMode) {
     return (
       <MediaPageLayout heroItems={heroItems} showOTT={false}>
+        <MediaCarousel
+          title="For shitu"
+          items={doraemonData.map(tmdbToMediaItem)}
+          contentType="movie"
+          isLoading={dl}
+        />
         <MediaCarousel
           title="Animation Hits"
           items={kidsMovies.map(tmdbMovieToMediaItem)}

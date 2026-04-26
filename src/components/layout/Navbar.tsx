@@ -86,7 +86,7 @@ export function Navbar() {
             <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase hidden md:block">shituFlix</span>
           </Link>
 
-          <div className="hidden items-center gap-6 lg:flex">
+          <div className="hidden items-center gap-6 md:flex">
             <Link href="/" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/' ? 'font-bold text-white' : 'text-gray-200'}`}>Home</Link>
             <Link href="/movies" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/movies' ? 'font-bold text-white' : 'text-gray-200'}`}>Movies</Link>
             <Link href="/tv" className={`text-sm transition-colors hover:text-gray-300 ${pathname === '/tv' ? 'font-bold text-white' : 'text-gray-200'}`}>TV Shows</Link>
@@ -158,7 +158,7 @@ export function Navbar() {
               <img
                 src="/assets/icons/Search.svg"
                 alt="Search"
-                className="hidden h-6 w-6 cursor-pointer brightness-0 invert transition-transform hover:scale-110 active:scale-90 lg:block"
+                className="hidden h-6 w-6 cursor-pointer brightness-0 invert transition-transform hover:scale-110 active:scale-90 md:block"
                 onClick={() => setIsSearchOpen(true)}
               />
             )}
@@ -225,7 +225,7 @@ export function Navbar() {
           </div>
 
           {/* Mobile Profile & Search */}
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex items-center gap-3 md:hidden">
             <button
               onClick={() => dispatch(toggleTitles())}
               className={`flex items-center justify-center p-1 rounded-md transition-all ${showTitles ? 'text-white bg-white/10' : 'text-gray-400 hover:text-white'}`}

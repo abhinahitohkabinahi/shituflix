@@ -37,3 +37,9 @@ export function anilistToMediaItem(a: any): MediaItem {
     rating: a.averageScore ? a.averageScore / 10 : undefined,
   };
 }
+
+export function tmdbToMediaItem(item: TmdbMovie | TmdbTVShow): MediaItem {
+  if ('title' in item) return tmdbMovieToMediaItem(item as TmdbMovie);
+  return tmdbTVToMediaItem(item as TmdbTVShow);
+}
+

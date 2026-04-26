@@ -172,13 +172,13 @@ export default function ProfileSelectionPage() {
           <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-md overflow-hidden ring-4 ring-transparent group-hover:ring-white transition-all duration-300 group-hover:scale-105 shadow-2xl">
             <Image 
               src="/assets/images/profiles/kids.svg" 
-              alt="Kids" 
+              alt="Shitu" 
               fill 
               className={`object-cover transition-opacity duration-300 ${isEditing ? 'opacity-50' : 'opacity-100'}`}
             />
           </div>
           <span className="text-gray-500 text-xl md:text-2xl font-medium group-hover:text-white transition-colors duration-300">
-            Kids
+            Shitu
           </span>
         </div>
         
