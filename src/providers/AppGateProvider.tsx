@@ -44,7 +44,7 @@ export function AppGateProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {showIntro && <NetflixIntro onComplete={() => setShowIntro(false)} letter="D" />}
+      {showIntro && <NetflixIntro onComplete={() => setShowIntro(false)} letter="S" />}
       {renderContent()}
     </>
   );

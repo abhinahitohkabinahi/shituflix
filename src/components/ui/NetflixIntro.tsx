@@ -6,7 +6,7 @@ interface NetflixIntroProps {
   letter?: string;
 }
 
-export const NetflixIntro: React.FC<NetflixIntroProps> = ({ onComplete, letter = 'D' }) => {
+export const NetflixIntro: React.FC<NetflixIntroProps> = ({ onComplete, letter = 'S' }) => {
   useEffect(() => {
     // The animation takes about 3.5 seconds.
     const timer = setTimeout(() => {
