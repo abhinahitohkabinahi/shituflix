@@ -27,7 +27,7 @@ export function LandingFooter() {
           </button>
         </div>
 
-        <p className="text-xs">dograFlix India</p>
+        <p className="text-xs">shituFlix India</p>
       </div>
     </footer>
   );

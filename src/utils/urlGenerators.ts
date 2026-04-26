@@ -28,7 +28,7 @@ export function generateVideoEasyAnimeUrl(anilistId: string, episode: number, du
 }
 
 // Provider preference persistence
-const PROVIDER_KEY = 'dograflix_provider';
+const PROVIDER_KEY = 'shituflix_provider';
 
 export function setProviderPreference(provider: VideoProvider): void {
   if (typeof window !== 'undefined') {

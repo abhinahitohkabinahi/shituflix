@@ -4,7 +4,7 @@ const footerLinks = [
   'FAQ', 'Help Center', 'Account', 'Media Center',
   'Investor Relations', 'Jobs', 'Ways to Watch', 'Terms of Use',
   'Privacy', 'Cookie Preferences', 'Corporate Information', 'Contact Us',
-  'Speed Test', 'Legal Notices', 'Only on dograFlix'
+  'Speed Test', 'Legal Notices', 'Only on shituFlix'
 ];
 
 export function Footer() {
@@ -28,7 +28,7 @@ export function Footer() {
         </div>
 
         <div className="text-[11px]">
-          © 1997-2026 dograFlix, Inc.
+          © 1997-2026 shituFlix, Inc.
         </div>
       </div>
     </footer>

@@ -190,7 +190,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="bg-[#e50914]/10 p-6 rounded-2xl border border-[#e50914]/20">
-              <h3 className="text-[#e50914] font-bold mb-2">DograFlix Premium</h3>
+              <h3 className="text-[#e50914] font-bold mb-2">shituFlix Premium</h3>
               <p className="text-gray-400 text-xs leading-relaxed">
                 You are currently on the free tier. Upgrade for 4K streaming and offline downloads.
               </p>

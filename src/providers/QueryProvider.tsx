@@ -13,7 +13,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       const storagePersister = createSyncStoragePersister({
         storage: window.localStorage,
-        key: 'DOGRAFLIX_QUERY_CACHE',
+        key: 'shituFLIX_QUERY_CACHE',
       });
       setPersister(storagePersister);
     }

@@ -105,7 +105,7 @@ export function SignInForm() {
       </div>
 
       <p className="text-white/70 text-base mt-12">
-        New to DograFlix?{' '}
+        New to shituFlix?{' '}
         <a href="/signup" className="text-white font-semibold hover:underline">Sign up now.</a>
       </p>
 

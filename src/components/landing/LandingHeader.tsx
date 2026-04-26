@@ -24,7 +24,7 @@ export function LandingHeader() {
         <Link href="/">
           <Image
             src="/assets/images/logo.svg"
-            alt="dograFlix"
+            alt="shituFlix"
             width={148}
             height={40}
             className="w-28 lg:w-36 h-auto"

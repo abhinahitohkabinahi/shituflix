@@ -38,7 +38,7 @@ async function handler(request: NextRequest) {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'User-Agent': request.headers.get('user-agent') || 'dograFlix-App/1.0',
+        'User-Agent': request.headers.get('user-agent') || 'shituFlix-App/1.0',
       },
       signal: AbortSignal.timeout(15000),
     });

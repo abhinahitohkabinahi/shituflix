@@ -82,8 +82,8 @@ export function Navbar() {
         {/* Left Side: Logo & Desktop Links */}
         <div className="flex items-center gap-8">
           <Link href="/" className="transition-transform hover:scale-105 active:scale-95">
-            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase md:hidden">DOGRAFLIX</span>
-            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase hidden md:block">dograFlix</span>
+            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase md:hidden">shituFLIX</span>
+            <span className="text-[#e50914] text-2xl font-display tracking-tighter uppercase hidden md:block">shituFlix</span>
           </Link>
 
           <div className="hidden items-center gap-6 lg:flex">

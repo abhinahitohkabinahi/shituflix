@@ -21,7 +21,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
         <Link href="/">
           <Image
             src="/assets/images/logo.svg"
-            alt="dograFlix"
+            alt="shituFlix"
             width={167}
             height={45}
             className="w-32 md:w-40 h-auto"

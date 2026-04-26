@@ -9,7 +9,7 @@ import { AuthProvider } from '@/providers/AuthProvider';
 import { AppGateProvider } from '@/providers/AppGateProvider';
 
 export const metadata: Metadata = {
-  title: 'dograFlix',
+  title: 'shituFlix',
   description: 'Stream movies, TV shows, and anime',
 };
 
