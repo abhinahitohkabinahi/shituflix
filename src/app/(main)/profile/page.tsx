@@ -217,28 +217,24 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleEditSubmit} className="space-y-6">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Display Name</label>
-            <Input 
-              value={editName} 
-              onChange={e => setEditName(e.target.value)} 
-              required 
-              placeholder="Your name"
-              className="bg-[#333] border-none text-white h-12 focus:bg-[#444] transition-colors"
-            />
-          </div>
+          <Input 
+            label="Display Name"
+            value={editName} 
+            onChange={e => setEditName(e.target.value)} 
+            required 
+            placeholder="Your name"
+            className="bg-[#333] border-none text-white h-12 focus:bg-[#444] transition-colors"
+          />
           
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Email Address</label>
-            <Input 
-              type="email" 
-              value={editEmail} 
-              onChange={e => setEditEmail(e.target.value)} 
-              required 
-              placeholder="Your email"
-              className="bg-[#333] border-none text-white h-12 focus:bg-[#444] transition-colors"
-            />
-          </div>
+          <Input 
+            label="Email Address"
+            type="email" 
+            value={editEmail} 
+            onChange={e => setEditEmail(e.target.value)} 
+            required 
+            placeholder="Your email"
+            className="bg-[#333] border-none text-white h-12 focus:bg-[#444] transition-colors"
+          />
 
           {editError && (
             <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded text-sm font-medium animate-in shake-in duration-300">
